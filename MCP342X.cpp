@@ -114,7 +114,7 @@ bool MCP342X::startConversion(void) {
  */
 bool MCP342X::startConversion(uint8_t channel) {
   Wire.beginTransmission(devAddr);
-  configRegShdw = ((configRegShdw & !MCP342X_CHANNEL_MASK) | 
+  configRegShdw = ((configRegShdw & ~MCP342X_CHANNEL_MASK) | 
 			   (channel & MCP342X_CHANNEL_MASK));
   Wire.write(configRegShdw | MCP342X_RDY);
   return (Wire.endTransmission() == 0);
