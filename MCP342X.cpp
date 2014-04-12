@@ -15,7 +15,7 @@
 
     (c) Copyright 2013 by Chip Schnarel <schnarel@hotmail.com>
     Updates should (hopefully) always be available at
-        https://github.com/schnarel/MCP342X
+        https://github.com/uchip/MCP342X
 
 	@section  HISTORY
 
