@@ -159,7 +159,7 @@ uint8_t MCP342X::getResult(int32_t *dataPtr) {
   }
 
   do {
-     if(Wire.requestFrom((uint8_t) 0x6B, (uint8_t) 4) == 4) {
+     if(Wire.requestFrom((uint8_t) devAddr, (uint8_t) 4) == 4) {
        ((char*)dataPtr)[3] = Wire.read();
        ((char*)dataPtr)[2] = Wire.read();
        ((char*)dataPtr)[1] = Wire.read();
