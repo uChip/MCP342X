@@ -125,7 +125,8 @@ bool MCP342X::startConversion(uint8_t channel) {
  * Read the conversion value (12, 14 or 16 bit)
  *  Spins reading status until ready then
  *  fills in the supplied location with the 16-bit (two byte)
- *  conversion value and returns the config byte
+ *  conversion value and returns the status byte
+ *  Note: status of -1 "0xFF' implies read error
  */
 uint8_t MCP342X::getResult(int16_t *dataPtr) {
   uint8_t adcStatus;
@@ -146,11 +147,36 @@ uint8_t MCP342X::getResult(int16_t *dataPtr) {
 
  
 /******************************************
+ * Check to see if the conversion value (12, 14 or 16 bit)
+ *  is available.  If so, then
+ *  fill in the supplied location with the 16-bit (two byte)
+ *  conversion value and status the config byte
+ *  Note: status of -1 "0xFF' implies read error
+ */
+uint8_t MCP342X::checkforResult(int16_t *dataPtr) {
+  uint8_t adcStatus;
+  if((configRegShdw & MCP342X_SIZE_MASK) == MCP342X_SIZE_18BIT) {
+    return 0xFF;
+  }
+
+  if(Wire.requestFrom(devAddr, (uint8_t) 3) == 3) {
+    ((char*)dataPtr)[1] = Wire.read();
+    ((char*)dataPtr)[0] = Wire.read();
+    adcStatus = Wire.read();
+  }
+  else return 0xFF;
+
+  return adcStatus;
+}
+
+ 
+/******************************************
  * Read the conversion value (18 bit)
  *  Spins reading status until ready then
  *  fills in the supplied location (32 bit) with
  *  the 24-bit (three byte) conversion value
- *  and returns the config byte
+ *  and returns the status byte
+ *  Note: status of -1 "0xFF' implies read error
  */
 uint8_t MCP342X::getResult(int32_t *dataPtr) {
   uint8_t adcStatus;
@@ -170,4 +196,32 @@ uint8_t MCP342X::getResult(int32_t *dataPtr) {
   *dataPtr = (*dataPtr)>>8;
   return adcStatus;
 }
+
+
+/******************************************
+ * Check to see if the conversion value (18 bit)
+ *  is available.  If so, then
+ *  fill in the supplied location (32 bit) with
+ *  the 24-bit (three byte) conversion value
+ *  and return the status byte
+ *  Note: status of -1 "0xFF' implies read error
+ */
+uint8_t MCP342X::checkforResult(int32_t *dataPtr) {
+  uint8_t adcStatus;
+  if((configRegShdw & MCP342X_SIZE_MASK) != MCP342X_SIZE_18BIT) {
+    return 0xFF;
+  }
+
+  if(Wire.requestFrom((uint8_t) devAddr, (uint8_t) 4) == 4) {
+    ((char*)dataPtr)[3] = Wire.read();
+    ((char*)dataPtr)[2] = Wire.read();
+    ((char*)dataPtr)[1] = Wire.read();
+    adcStatus = Wire.read();
+  }
+  else return 0xFF;
+
+  *dataPtr = (*dataPtr)>>8;
+  return adcStatus;
+}
+
 

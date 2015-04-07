@@ -114,6 +114,10 @@ class MCP342X {
         uint8_t getResult(int16_t *data);
         uint8_t getResult(int32_t *data);
 
+        // Non-blocking Read the ADC result
+        uint8_t checkforResult(int16_t *data);
+        uint8_t checkforResult(int32_t *data);
+
     private:
         uint8_t devAddr;
         uint8_t configRegShdw;
