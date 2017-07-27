@@ -70,6 +70,7 @@ MCP342X::MCP342X(uint8_t address) {
  */
 bool MCP342X::testConnection() {
     Wire.beginTransmission(devAddr);
+    Wire.write(configRegShdw | MCP342X_RDY);
     return (Wire.endTransmission() == 0);
 }
 
